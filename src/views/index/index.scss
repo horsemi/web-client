@@ -1,0 +1,29 @@
+@import "@/assets/scss/variables.scss";
+
+.index-wrap {
+  width: 100%;
+}
+.image {
+  width: 100%;
+  display: block;
+}
+
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
+
+.button {
+  padding: 0;
+  float: right;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}

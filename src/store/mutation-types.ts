@@ -1,0 +1,13 @@
+const PUBLIC = {
+    UPDATE_STATE: "UPDATE_STATE",
+    UPDATE_STATE_ASYN: "UPDATE_STATE_ASYN",
+    GET_DATA_ASYN: "GET_DATA_ASYN"
+}
+
+const LOGIN = {
+}
+
+export {
+    PUBLIC,
+    LOGIN
+}
