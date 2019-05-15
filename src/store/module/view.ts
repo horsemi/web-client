@@ -19,23 +19,33 @@ export interface IViewService {
      * 设置当前激活的标签
      * @param index 
      */
-    set_active_index(index: number): void;
+    set_active_index(index: string): void;
+    getOpenTab();
+    getActiveIndex();
 }
 
 class ViewService implements IViewService {
     private _store: INamespacedState;
-    private _openTab: any;
+    private _openTab = new Array<any>();
 
     constructor() {
         this._store = storeService.createNamespace(stateTypes.VIEW.NAMESPACE, {
-        [stateTypes.VIEW.OPENTAB]: [],
-        [stateTypes.VIEW.ACTIVEINDEX]: '/main',
+            [stateTypes.VIEW.OPENTAB]:Array<any>(),
+            [stateTypes.VIEW.ACTIVEINDEX]: '/main',
         });
     }
 
+    getOpenTab() {
+        return this._store.getData(stateTypes.VIEW.OPENTAB);
+    }
+
+    getActiveIndex() {
+        return this._store.getData(stateTypes.VIEW.ACTIVEINDEX);
+    }
+
     add_tabs(tab: any): void {
-        this._openTab = this._store.getData(stateTypes.VIEW.OPENTAB);
-        this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab.push(tab));
+        this._openTab = this._store.getData(stateTypes.VIEW.OPENTAB);       
+        this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab);
     }
     delete_tabs(route: any): void {
         let index = 0;
@@ -47,14 +57,14 @@ class ViewService implements IViewService {
             index++;
         }
         this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab.splice(index, 1));
-        
+
     }
-    set_active_index(index: number): void {
+    set_active_index(index: string): void {
         this._store.setData(stateTypes.VIEW.ACTIVEINDEX, index);
     }
 
 }
-  
+
 const viewService: IViewService = new ViewService();
-  
+
 export default viewService;

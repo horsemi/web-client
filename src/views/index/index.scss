@@ -2,28 +2,18 @@
 
 .index-wrap {
   width: 100%;
-}
-.image {
-  width: 100%;
-  display: block;
+  height:100vh;
 }
 
-.bottom {
-  margin-top: 13px;
-  line-height: 12px;
+.el-tabs.el-tabs--border-card {
+  box-shadow: none;
+  border-bottom: none;
 }
 
-.button {
-  padding: 0;
-  float: right;
+.app-wrap{
+  padding: 20px;
 }
-
-.clearfix:before,
-.clearfix:after {
-    display: table;
-    content: "";
-}
-
-.clearfix:after {
-    clear: both
+.content-wrap{
+  border: 1px solid #DCDFF7;
+  border-top: none;
 }
