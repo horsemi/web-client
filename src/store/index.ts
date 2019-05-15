@@ -1,15 +1,28 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import store, { IStoreService } from './store';
+import view, { IViewService } from './module/view';
+
 // modules
-import Login from './module/login'
-import Index from './module/index'
+
+Vue.prototype.$services = {
+  store,
+  view
+}
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    $services: {
+      store: IStoreService,
+      view: IViewService
+    }
+  }
+}
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    //
-  },
+  state: store.getStorer(),
   mutations: {
     //
   },
@@ -17,7 +30,6 @@ export default new Vuex.Store({
     //
   },
   modules: {
-    Login,
-    Index
+
   }
 })
