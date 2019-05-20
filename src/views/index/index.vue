@@ -24,7 +24,7 @@
                 >
                   <el-tab-pane
                     :key="item.name"
-                    v-for="(item, index) in openTab"
+                    v-for="(item) in openTab"
                     :label="item.name"
                     :name="item.route"
                   ></el-tab-pane>

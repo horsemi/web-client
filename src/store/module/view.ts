@@ -3,25 +3,19 @@ import { INamespacedState } from '../store';
 import * as stateTypes from '../state-types'
 
 export interface IViewService {
+    openTab: Array<any>;
+    activeIndex: string;
     /**
      * 添加标签
      * @param tab 
      */
-    add_tabs(tab: any): void;
+    add_tabs(tab: {route: string, name: string | undefined}): void;
 
     /**
      * 删除标签
      * @param route 
      */
     delete_tabs(route: any): void;
-
-    /**
-     * 设置当前激活的标签
-     * @param index 
-     */
-    set_active_index(index: string): void;
-    getOpenTab();
-    getActiveIndex();
 }
 
 class ViewService implements IViewService {
@@ -30,21 +24,29 @@ class ViewService implements IViewService {
 
     constructor() {
         this._store = storeService.createNamespace(stateTypes.VIEW.NAMESPACE, {
-            [stateTypes.VIEW.OPENTAB]:Array<any>(),
+            [stateTypes.VIEW.OPENTAB]: Array<any>(),
             [stateTypes.VIEW.ACTIVEINDEX]: '/main',
         });
     }
 
-    getOpenTab() {
+    get openTab() {
         return this._store.getData(stateTypes.VIEW.OPENTAB);
     }
 
-    getActiveIndex() {
+    get activeIndex() {
         return this._store.getData(stateTypes.VIEW.ACTIVEINDEX);
     }
 
+    set activeIndex(val: string) {
+        /**
+         * 设置当前激活的标签
+         */
+        this._store.setData(stateTypes.VIEW.ACTIVEINDEX, val);
+    }
+
     add_tabs(tab: any): void {
-        this._openTab = this._store.getData(stateTypes.VIEW.OPENTAB);       
+        this._openTab = this._store.getData(stateTypes.VIEW.OPENTAB);  
+        this._openTab.push(tab);
         this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab);
     }
     delete_tabs(route: any): void {
@@ -56,11 +58,9 @@ class ViewService implements IViewService {
             }
             index++;
         }
-        this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab.splice(index, 1));
+        this._openTab.splice(index, 1);
+        this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab);
 
-    }
-    set_active_index(index: string): void {
-        this._store.setData(stateTypes.VIEW.ACTIVEINDEX, index);
     }
 
 }

@@ -8,33 +8,19 @@ import { slider, navTop } from '@/components/index'
     slider,
     navTop
   },
-  computed: {
-    openTab() {
-      return this.$services.view.getOpenTab();
-    },
-    activeIndex: {
-      get() {
-        return this.$services.view.getActiveIndex();
-      },
-      set(val: any) {
-        this.$services.view.set_active_index(val);
-      }
-    }
-  },
   watch: {
     '$route'(to: any, from: any) {
       // 判断路由是否已经打开
       // 已经打开的 ，将其置为active
       // 未打开的，将其放入队列里
       let flag = false;
-      let _openTab = this.$services.view.getOpenTab();
-      for (let item of _openTab) {
+      for (let item of this.$services.view.openTab) {
         console.log("item.name", item.name)
         console.log("t0.name", to.name)
 
         if (item.name === to.name) {
           console.log('to.path', to.path);
-          this.$services.view.set_active_index(to.path);
+          this.$services.view.activeIndex = to.path;
           flag = true;
           break;
         }
@@ -43,7 +29,7 @@ import { slider, navTop } from '@/components/index'
       if (!flag) {
         console.log('to.path', to.path);
         this.$services.view.add_tabs({ route: to.path, name: to.name });
-        this.$services.view.set_active_index(to.path);
+        this.$services.view.activeIndex = to.path;
       }
     }
   }
@@ -53,6 +39,22 @@ export default class Index extends Vue {
   // data
   data: IndexData = {
     pageName: 'index'
+  }
+
+  get openTab() {
+    return this.$services.view.openTab;
+  }
+
+  set openTab(val: any) {
+    this.$services.view.add_tabs(val);
+  }
+
+  get activeIndex() {
+    return this.$services.view.activeIndex;
+  }
+
+  set activeIndex(val: string) {
+    this.$services.view.activeIndex = val;
   }
 
   created() {
@@ -71,13 +73,14 @@ export default class Index extends Vue {
       console.log('1');
       this.$services.view.add_tabs({route: '/index/main' , name: 'main'});
       this.$services.view.add_tabs({route: this.$route.path , name: this.$route.name });
-      this.$services.view.set_active_index(this.$route.path);
-      
+      this.activeIndex = this.$route.path;
+      console.log(this.openTab);
     } else {
       console.log('2');
       this.$services.view.add_tabs({route: '/index/main' , name: 'main'});
-      this.$services.view.set_active_index('/index/main');
+      this.activeIndex = '/index/main';
       this.$router.push('/');
+      console.log(this.openTab);
     }
   }
 
@@ -88,28 +91,25 @@ export default class Index extends Vue {
 
   // tab标签点击时，切换相应的路由
   tabClick(tab: any) {
-    let _activeIndex = this.$services.view.getActiveIndex();
     console.log("tab", tab);
-    console.log('active', _activeIndex);
-    this.$router.push({ path: _activeIndex });
+    console.log('active', this.activeIndex);
+    this.$router.push({ path: this.activeIndex });
   }
 
   // 移除tab标签
   tabRemove(targetName: string) {
-    let _openTab = this.$services.view.getOpenTab();
-    let _activeIndex = this.$services.view.getActiveIndex();
     console.log("tabRemove", targetName);
     // 首页不删
-    if (targetName === '/' || targetName === '/main') {
+    if (targetName === '/' || targetName === '/index/main') {
       return
     }
-    this.$store.commit('delete_tabs', targetName);
-    if (_activeIndex === targetName) {
+    this.$services.view.delete_tabs(targetName);
+    if (this.activeIndex === targetName) {
       // 设置当前激活的路由
-      if (_openTab && _openTab.length >= 1) {
-        console.log('=============', _openTab[_openTab.length - 1].route)
-        this.$services.view.set_active_index(_openTab[_openTab.length - 1].route);
-        this.$router.push({ path: _activeIndex });
+      if (this.openTab && this.openTab.length >= 1) {
+        console.log('=============', this.openTab[this.openTab.length - 1].route)
+        this.activeIndex = this.openTab[this.openTab.length - 1].route;
+        this.$router.push({ path: this.activeIndex });
       } else {
         this.$router.push({ path: '/' });
       }

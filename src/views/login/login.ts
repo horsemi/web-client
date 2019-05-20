@@ -48,7 +48,7 @@ export default class Login extends Vue {
 
     protected async login() {
         this.$utils.common.setToken(this.LoginData.account);
-        this.$router.push('/index');
+        this.$router.push('/index/page1');
     }
 
     protected async test() {
