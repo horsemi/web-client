@@ -30,6 +30,7 @@
   "devDependencies": {
     "@types/jest": "^23.1.4",
     "@types/js-cookie": "^2.2.0",
+    "@types/sortablejs": "^1.7.2",
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-e2e-cypress": "^3.2.0",
     "@vue/cli-plugin-typescript": "^3.6.0",
@@ -39,6 +40,7 @@
     "babel-core": "7.0.0-bridge.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
+    "sortablejs": "^1.9.0",
     "ts-jest": "^23.0.0",
     "typescript": "^3.0.0",
     "vue-template-compiler": "^2.5.17"

@@ -3,7 +3,7 @@ import { INamespacedState } from '../store';
 import * as stateTypes from '../state-types'
 
 export interface IViewService {
-    openTab: Array<any>;
+    openTab: any[];
     activeIndex: string;
     /**
      * 添加标签
@@ -24,7 +24,7 @@ class ViewService implements IViewService {
 
     constructor() {
         this._store = storeService.createNamespace(stateTypes.VIEW.NAMESPACE, {
-            [stateTypes.VIEW.OPENTAB]: Array<any>(),
+            [stateTypes.VIEW.OPENTAB]: [{route: '/index/main', name: 'main'}],
             [stateTypes.VIEW.ACTIVEINDEX]: '/main',
         });
     }
