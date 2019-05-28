@@ -1,6 +1,5 @@
 import storeService, { IStoreService } from '../store';
 import { INamespacedState } from '../store';
-import * as stateTypes from '../state-types'
 
 export interface IViewService {
     openTab: any[];
@@ -18,40 +17,46 @@ export interface IViewService {
     delete_tabs(route: any): void;
 }
 
+const stateTypes = {
+    NAMESPACE: "view",
+    OPENTAB: "openTab",
+    ACTIVEINDEX: "activeIndex"
+};
+
 class ViewService implements IViewService {
     private _store: INamespacedState;
     private _openTab = new Array<any>();
 
     constructor() {
-        this._store = storeService.createNamespace(stateTypes.VIEW.NAMESPACE, {
-            [stateTypes.VIEW.OPENTAB]: [{route: '/index/main', name: 'main'}],
-            [stateTypes.VIEW.ACTIVEINDEX]: '/main',
+        this._store = storeService.createNamespace(stateTypes.NAMESPACE, {
+            [stateTypes.OPENTAB]: [{route: '/index/main', name: 'main'}],
+            [stateTypes.ACTIVEINDEX]: '/main',
         });
     }
 
     get openTab() {
-        return this._store.getData(stateTypes.VIEW.OPENTAB);
+        return this._store.getData(stateTypes.OPENTAB);
     }
 
     get activeIndex() {
-        return this._store.getData(stateTypes.VIEW.ACTIVEINDEX);
+        return this._store.getData(stateTypes.ACTIVEINDEX);
     }
 
     set activeIndex(val: string) {
         /**
          * 设置当前激活的标签
          */
-        this._store.setData(stateTypes.VIEW.ACTIVEINDEX, val);
+        this._store.setData(stateTypes.ACTIVEINDEX, val);
     }
 
     add_tabs(tab: any): void {
-        this._openTab = this._store.getData(stateTypes.VIEW.OPENTAB);  
+        this._openTab = this._store.getData(stateTypes.OPENTAB);  
         this._openTab.push(tab);
-        this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab);
+        this._store.setData(stateTypes.OPENTAB, this._openTab);
     }
     delete_tabs(route: any): void {
         let index = 0;
-        this._openTab = this._store.getData(stateTypes.VIEW.OPENTAB);
+        this._openTab = this._store.getData(stateTypes.OPENTAB);
         for (let option of this._openTab) {
             if (option.route === route) {
                 break;
@@ -59,7 +64,7 @@ class ViewService implements IViewService {
             index++;
         }
         this._openTab.splice(index, 1);
-        this._store.setData(stateTypes.VIEW.OPENTAB, this._openTab);
+        this._store.setData(stateTypes.OPENTAB, this._openTab);
 
     }
 
