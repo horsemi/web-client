@@ -21,15 +21,20 @@ interface ICommomUtil {
 }
 
 class CommonUtil implements ICommomUtil {
+  
+  TOKEN_KEY: string = 'token'
   /**
-   * @Author: asheng
-   * @msg: 存取token
+   * @author: asheng
+   * @description: 存取token
    * @param {string} token
    */
-  TOKEN_KEY: string = 'token'
   setToken(token: string): void {
     Cookies.set(this.TOKEN_KEY, token, { expires: cookieExpires || 1 })
   }
+  /**
+   * @author: asheng
+   * @description: 获取token
+   */
   getToken(): boolean | string {
     const token = Cookies.get(this.TOKEN_KEY)
     if (token) {
