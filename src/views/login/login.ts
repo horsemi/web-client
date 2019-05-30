@@ -10,18 +10,18 @@ import Cookies from 'js-cookie';
 })
 export default class Login extends Vue {
     protected LoginData = {
-        account: "",
-        password: ""
+        userName: "",
+        userPassword: ""
     }
 
     protected dataRule = {
-        account:
+        userName:
         [
             { type: 'string', message: '请确认账号格式是否正确', trigger: 'blur'},
             { required: true, message: '请输入账号', trigger: 'blur'},
             { max: 10, message: '账号位数过长', trigger: 'blur'}
         ],
-        password:
+        userPassword:
         [
             { type: 'string', message: '请确认密码格式是否正确', trigger: 'blur'},
             { required: true, message: '请输入密码', trigger: 'blur'},
@@ -47,7 +47,7 @@ export default class Login extends Vue {
     }
 
     protected async login() {
-        this.$utils.common.setToken(this.LoginData.account);
+        this.$services.user.login(this.LoginData);
         this.$router.push('/index/page1');
     }
 

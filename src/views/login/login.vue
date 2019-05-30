@@ -12,12 +12,12 @@
 								<span>登录</span>
 							</div>
 							<el-form label-position="left" label-width="80px" :model="LoginData" :rules="dataRule">
-								<el-form-item label="账号" prop="account">
-									<el-input type="text" v-model="LoginData.account" >
+								<el-form-item label="账号" prop="userName">
+									<el-input type="text" v-model="LoginData.userName" >
 									</el-input>
 								</el-form-item>
-								<el-form-item label="密码" prop="password">
-									<el-input show-password v-model="LoginData.password">
+								<el-form-item label="密码" prop="userPassword">
+									<el-input show-password v-model="LoginData.userPassword">
 									</el-input>
 								</el-form-item>
 							</el-form>
