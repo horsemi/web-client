@@ -1,6 +1,6 @@
 import storeService, { IStoreService } from '../store';
 import { INamespacedState } from '../store';
-import { commonUtil } from '@/utils/commonUtils'
+import authService, { IAuth } from '@/utils/auth';
 
 export interface IUserService {
     token: string;
@@ -68,8 +68,8 @@ class UserSerivce implements IUserService {
     }
 
     get token() {
-        if (commonUtil.getToken()) {
-            return commonUtil.getToken() as string;
+        if (authService.Token) {
+            return authService.Token as string;
         } else {
             console.error("token is null");
             return '';
@@ -81,7 +81,7 @@ class UserSerivce implements IUserService {
             console.error("token is null");
             return;
         }
-        commonUtil.setToken(val);
+        authService.Token = val;
     }
 
     get id() {

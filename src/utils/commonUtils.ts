@@ -6,14 +6,10 @@
  * @LastEditTime: 2018-12-12 15:22:04
  */
 
-import Cookies from 'js-cookie'
 import { cookieExpires } from '@/config' // cookie保存的天数
 import moment from 'moment';
 
 interface ICommomUtil {
-    TOKEN_KEY: string;
-    setToken(token: string): void;
-    getToken(): boolean | string;
     getParams(url: string): any;
     hasKey(obj: any, key: string | number): number | boolean;
     formatDate(datetime: string | Date): string;
@@ -22,28 +18,6 @@ interface ICommomUtil {
 
 class CommonUtil implements ICommomUtil {
   
-  TOKEN_KEY: string = 'token'
-  /**
-   * @author: asheng
-   * @description: 存取token
-   * @param {string} token
-   */
-  setToken(token: string): void {
-    Cookies.set(this.TOKEN_KEY, token, { expires: cookieExpires || 1 })
-  }
-  /**
-   * @author: asheng
-   * @description: 获取token
-   */
-  getToken(): boolean | string {
-    const token = Cookies.get(this.TOKEN_KEY)
-    if (token) {
-      return token
-    } else {
-      return false
-    }
-  }
-
 /**
  * @param {String} url
  * @description 从URL中解析参数

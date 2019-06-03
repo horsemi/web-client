@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import { MAINHOST, ISMOCK, conmomPrams } from '@/config'
 import requestConfig from '@/config/requestConfig'
-import { commonUtil } from '@/utils/commonUtils'
+import authService, { IAuth } from '@/utils/auth';
 import router from '@/router'
 
 declare type Methods = "GET" | "OPTIONS" | "HEAD" | "POST" | "PUT" | "DELETE" | "TRACE" | "CONNECT"
@@ -10,7 +10,7 @@ declare interface Datas {
   [key: string]: any
 }
 const baseURL = process.env.NODE_ENV === 'production' ? MAINHOST : location.origin
-const token = commonUtil.getToken()
+const token = authService.Token;
 
 class HttpRequest {
   public queue: any // 请求的url集合
