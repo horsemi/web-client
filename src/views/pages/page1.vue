@@ -1,13 +1,13 @@
 <template>
 <div>
     <el-tabs id="tab">
-        <el-tab-pane label="1">
+        <el-tab-pane label="GET">
             <el-button @click="GET">GET</el-button>
         </el-tab-pane>
-        <el-tab-pane label="2">
+        <el-tab-pane label="POST">
             <el-button @click="POST">POST</el-button>
         </el-tab-pane>
-        <el-tab-pane label="3">
+        <el-tab-pane label="UPLOAD">
             <el-upload
                 drag
                 action
@@ -18,14 +18,8 @@
                 <div>将文件拖到此处，或<em>点击上传</em></div>
             </el-upload>
         </el-tab-pane>
-        <el-tab-pane label="4">
+        <el-tab-pane label="DOWNLOAD">
             <el-button @click="DOWNLOAD">DOWNLOAD</el-button>
-        </el-tab-pane>
-        <el-tab-pane label="5">
-            5
-        </el-tab-pane>
-        <el-tab-pane label="6">
-            6
         </el-tab-pane>
     </el-tabs>
 </div>
@@ -70,7 +64,8 @@
         }
 
         protected beforeUpload(file: any) {
-            if (file.size > 307200) {
+            debugger;
+            if (file.size > 3072000) {
                 console.error(file.name + " file too large!");
                 this.$message.error(file.name + ' 文件超过了3MB');
                 return false;

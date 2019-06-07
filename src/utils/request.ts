@@ -7,14 +7,14 @@ import authService from '@/utils/auth';
 /**
  * 若系统参数NODE_ENV不为正式环境或为空，默认去本地
  */
-let baseURL = location.origin;
+let _baseURL = location.origin;
 let isMock = false;
 
 switch (process.env.NODE_ENV) {
-  case 'production': baseURL = HOST.ONLINEHOST; isMock = false; break;
-  case 'mock': baseURL = HOST.MOCKHOST; isMock = true; break;
-  case 'qa': baseURL = HOST.QAHOST; isMock = false; break;
-  default: baseURL = location.origin; isMock = false;
+  case 'production': _baseURL = HOST.ONLINEHOST; isMock = false; break;
+  case 'mock': _baseURL = HOST.MOCKHOST; isMock = true; break;
+  case 'qa': _baseURL = HOST.QAHOST; isMock = false; break;
+  default: _baseURL = location.origin; isMock = false;
 }
 
 export interface IRequest {
@@ -103,7 +103,7 @@ class Request implements IRequest {
        * 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
        * url = base url + request
        */
-      baseURL: baseURL,
+      baseURL: _baseURL,
       timeout: 5000   // 超时时间
     });
 
