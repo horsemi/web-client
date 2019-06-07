@@ -64,7 +64,6 @@
         }
 
         protected beforeUpload(file: any) {
-            debugger;
             if (file.size > 3072000) {
                 console.error(file.name + " file too large!");
                 this.$message.error(file.name + ' 文件超过了3MB');
