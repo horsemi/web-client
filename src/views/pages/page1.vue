@@ -1,58 +1,83 @@
 <template>
 <div>
-    <ul id="items">
-        <li>item 1</li>
-        <li>item 2</li>
-        <li>item 3</li>
-    </ul>
     <el-tabs id="tab">
-        <el-tab-pane label="1">
-            1
+        <el-tab-pane label="GET">
+            <el-button @click="GET">GET</el-button>
         </el-tab-pane>
-        <el-tab-pane label="2">
-            2
+        <el-tab-pane label="POST">
+            <el-button @click="POST">POST</el-button>
         </el-tab-pane>
-        <el-tab-pane label="3">
-            3
+        <el-tab-pane label="UPLOAD">
+            <el-upload
+                drag
+                action
+                multiple
+                :http-request="UPLOAD"
+                :before-upload="beforeUpload"
+                :file-list="fileLists">
+                <div>将文件拖到此处，或<em>点击上传</em></div>
+            </el-upload>
         </el-tab-pane>
-        <el-tab-pane label="4">
-            4
-        </el-tab-pane>
-        <el-tab-pane label="5">
-            5
-        </el-tab-pane>
-        <el-tab-pane label="6">
-            6
+        <el-tab-pane label="DOWNLOAD">
+            <el-button @click="DOWNLOAD">DOWNLOAD</el-button>
         </el-tab-pane>
     </el-tabs>
 </div>
 </template>
 
-<script>
+<script lang='ts'>
     import { Component, Vue } from "vue-property-decorator";
     import Sortable from 'sortablejs';
-    // var el = document.getElementById('items');
-    // var sortable = Sortable.create(el);
+    import * as pageApi from '@/api/page';
+
     @Component({
         created() {
             console.info(this);
             console.info(document);
         },
-        // mounted() {
-        //     console.info(this.$el);
-        //     debugger;
-        //     let eltabs = this.$el.querySelectorAll('.el-tabs__nav')[0];
-        //     Sortable.create(eltabs, {
-        //         onEnd: (evt) => {
-        //             console.info(evt);
-        //         }
-        //     });
-        // }
+        mounted() {
+            console.info(this.$el);
+            let eltabs = this.$el.querySelectorAll('.el-tabs__nav')[0];
+            Sortable.create(eltabs as HTMLElement, {
+                onEnd: (evt) => {
+                    console.info(evt);
+                }
+            });
+        }
     })
+
+    
     export default class Page1 extends Vue {
+
+        protected fileLists = new Array<{name: string, url: string}>();
 
         created() {
             //
+        }
+
+        protected GET() {
+            pageApi.get({data: "test"});
+        }
+
+        protected POST() {
+            pageApi.post({data: "test"});
+        }
+
+        protected beforeUpload(file: any) {
+            debugger;
+            if (file.size > 3072000) {
+                console.error(file.name + " file too large!");
+                this.$message.error(file.name + ' 文件超过了3MB');
+                return false;
+            }
+        }
+
+        protected UPLOAD(params: any) {
+            pageApi.upload(params.file);
+        }
+
+        protected DOWNLOAD() {
+            pageApi.download({data: 'download'});
         }
     }
 </script>

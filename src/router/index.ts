@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routes from './router'
-import { commonUtil } from '@/utils/commonUtils'
+import authService, { IAuth } from '@/utils/auth';
 
 Vue.use(Router)
 
@@ -15,7 +15,7 @@ const LOGIN_PAGE_NAME = 'login'
 
 // 跳转之前
 router.beforeEach((to, from, next) => {
-  const token = commonUtil.getToken()
+  const token = authService.Token;
   if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 未登录且要跳转的页面不是登录页
     next({

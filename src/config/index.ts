@@ -11,17 +11,7 @@ export const QAHOST: string = 'http://xxx.com'
 /** 
  * 线上mock
  */
-export const MOCKHOST: string = 'http://xxx.com'
-
-/** 
- * 是否mock
- */
-export const ISMOCK: boolean = true
-
-/**
- * 当前的host  ONLINEHOST | QAHOST | MOCKHOST
- */
-export const MAINHOST: string = ONLINEHOST
+export const MOCKHOST: string = ' https://www.easy-mock.com/mock/'
 
 /**
  * 请求的公共参数

@@ -1,123 +1,176 @@
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
-import { MAINHOST, ISMOCK, conmomPrams } from '@/config'
-import requestConfig from '@/config/requestConfig'
-import { commonUtil } from '@/utils/commonUtils'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import router from '@/router'
-
-declare type Methods = "GET" | "OPTIONS" | "HEAD" | "POST" | "PUT" | "DELETE" | "TRACE" | "CONNECT"
-declare interface Datas {
-  method?: Methods
-  [key: string]: any
-}
-const baseURL = process.env.NODE_ENV === 'production' ? MAINHOST : location.origin
-const token = commonUtil.getToken()
-
-class HttpRequest {
-  public queue: any // 请求的url集合
-  public constructor() {
-    this.queue = {}
-  }
-  destroy(url: string) {
-    delete this.queue[url]
-    if (!Object.keys(this.queue).length) {
-      // hide loading
-    }
-  }
-  interceptors(instance: any, url?: string) {
-    // 请求拦截
-    instance.interceptors.request.use((config: AxiosRequestConfig) => {
-      // 添加全局的loading...
-      if (!Object.keys(this.queue).length) {
-        // show loading
-      }
-      if (url) {
-        this.queue[url] = true
-      }
-      return config
-    }, (error: any) => {
-      console.error(error)
-    })
-    // 响应拦截
-    instance.interceptors.response.use((res: AxiosResponse) => {
-      if (url) {
-        this.destroy(url)
-      }
-      const { data, status } = res
-      if (status === 200 && ISMOCK) { return data } // 如果是mock数据，直接返回
-      if (status === 200 && data && data.code === 0) { return data } // 请求成功
-      return requestFail(res) // 失败回调
-    }, (error: any) => {
-      if (url) {
-        this.destroy(url)
-      }
-      console.error(error)
-    })
-  }
-  async request(options: AxiosRequestConfig) {
-    const instance = axios.create()
-    await this.interceptors(instance, options.url)
-    return instance(options)
-  }
-}
-
-// 请求失败
-const requestFail = (res: AxiosResponse) => {
-  let errStr = '网络繁忙！'
-  // token失效重新登录
-  if (res.data.code === 1000001) {
-    console.error('token失效重新登录')
-    return router.replace({ name: 'login' })
-  }
-
-  return {
-    err: console.error({
-      code: res.data.errcode || res.data.code,
-      msg: res.data.errmsg || errStr
-    })
-  }
-}
-
-// 合并axios参数
-const conbineOptions = (_opts: any, data: Datas, method: Methods): AxiosRequestConfig => {
-  let opts = _opts
-  if (typeof opts === 'string') {
-    opts = { url: opts }
-  }
-  const _data = { ...conmomPrams, ...opts.data, ...data }
-  const options = {
-    method: opts.method || data.method || method || 'GET',
-    url: opts.url,
-    header: { 'user-token': token },
-    baseURL
-  }
-  return options.method !== 'GET' ? Object.assign(options, { data: _data }) : Object.assign(options, { params: _data })
-}
-
-const HTTP = new HttpRequest()
+import { MessageBox, Message } from 'element-ui';
+import * as HOST from '@/config';
+import authService from '@/utils/auth';
 
 /**
- * 抛出整个项目的api方法
+ * 若系统参数NODE_ENV不为正式环境或为空，默认去本地
  */
-const Api = (() => {
-  const apiObj: any = {}
-  const requestList: any = requestConfig
-  const fun = (opts: AxiosRequestConfig | string) => {
-    return async (data = {}, method: Methods = "GET") => {
-      if (!token) {
-        console.error('No Token')
-        return router.replace({ name: 'login' })
-      }
-      const newOpts = conbineOptions(opts, data, method)
-      const res = await HTTP.request(newOpts)
-      return res
-    }
+let _baseURL = location.origin;
+let isMock = false;
+
+switch (process.env.NODE_ENV) {
+  case 'production': _baseURL = HOST.ONLINEHOST; isMock = false; break;
+  case 'mock': _baseURL = HOST.MOCKHOST; isMock = true; break;
+  case 'qa': _baseURL = HOST.QAHOST; isMock = false; break;
+  default: _baseURL = location.origin; isMock = false;
+}
+
+export interface IRequest {
+  /**
+   * @description axios封装后的GET，每次调用会实例一个Axios
+   * @param url
+   * @param data 
+   * @param config 
+   */
+  get(url: string, data?: {}, config?: {}): Promise<any>;
+
+  /**
+   * @description axios封装后的POST，每次调用会实例一个Axios
+   * @param url 
+   * @param data 
+   * @param config 
+   */
+  post(url: string, data?: {}, config?: {}): Promise<any>;
+
+  /**
+   * @description axios封装后的POST，提交上传文件为主
+   * @param url 
+   * @param fileInfo 单个文件上传
+   * @param formParams 多个文件上传
+   */
+  upload(url: string, fileInfo: File | { key: string, file: File }, formParams?: any): Promise<any>;
+
+  /**
+   * @description axios封装后的GET，下载文件为主
+   * @param url 
+   * @param data 
+   * @param config 
+   */
+  download(url: string, data?: {}, config?: {}): Promise<any>;
+}
+
+class Request implements IRequest {
+
+  public async get(url: string, data: any = {}, config: any = {}) {
+    const params = Object.assign({ params: data }, config);
+    const response = await this.createAxiosInstance().get(url, params);
+    return response;
   }
-  Object.keys(requestConfig).forEach((key) => {
-    apiObj[key] = fun(requestList[key])
-  })
 
-  return apiObj
-})()
+  public async post(url: string, data: any = {}, config: any = {}) {
+    const params = Object.assign(
+      { params: data }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' } }, config);
+    const response = await this.createAxiosInstance().post(url, params);
+    return response;
+  }
 
-export default Api as any
+  public async upload(url: string, fileInfo: File | { key: string, file: File }, formParams?: any) {
+    let fileData = new FormData();
+    if (formParams) {
+      for (let i in formParams) {
+        fileData.append(i, formParams[i]);
+      }
+    }
 
+    if (fileInfo instanceof File) {
+      fileData.append('file', fileInfo, fileInfo.name);
+    } else {
+      // XXX: 不知道有没有必要
+      fileData.append(fileInfo.key, fileInfo.file, fileInfo.file.name);
+    }
+    fileData.append('chunk', '0');  // 分割数据
+    const params = Object.assign({ headers: { 'Content-Type': 'multipart/form-data' } });
+    const response = await this.createAxiosInstance().post(url, fileData, params);
+    return response;
+  }
+
+  public async download(url: string, data?: {}, config?: {}) {
+    // TODO: 未测试，需要接口测试
+    const params = Object.assign({ params: data }, { responseType: 'arraybuffer' }, config);
+    const response = await this.createAxiosInstance().get(url, params);
+    return response;
+  }
+
+  /**
+   * @description axios实例化
+   */
+  private createAxiosInstance(): AxiosInstance {
+    const service = axios.create({
+      /**
+       * `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL
+       * 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
+       * url = base url + request
+       */
+      baseURL: _baseURL,
+      timeout: 5000   // 超时时间
+    });
+
+    // 请求拦截
+    service.interceptors.request.use((config: AxiosRequestConfig) => {
+      const token = authService.Token;
+      if (token) {
+        // let each request carry token
+        // ['X-Token'] is a custom headers key
+        // please modify it according to the actual situation
+        config.headers['X-Token'] = token
+      }
+      return config;
+    }, (error: any) => {
+      // TODO: 
+      console.error(error);
+      return Promise.reject(error);
+    });
+
+    // 响应拦截
+    service.interceptors.response.use((res: AxiosResponse) => {
+      const { data, status } = res;
+
+      // TODO: 可以做个网关
+      if (status === 200 && isMock) {
+        // 响应是来自MOCK数据，直接返回数据
+        return data;
+      }
+      if (status === 200 && data && data.code === 0) {
+        return data;
+      }
+
+      // 自定义code if the custom code is not 20000, it is judged as an error.
+      if (data.code !== 20000) {
+        Message({
+          message: data.message || 'Error',
+          type: 'error',
+          duration: 5 * 1000
+        })
+
+        // 自定义code 状态50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+        if (data.code === 50008 || data.code === 50012 || data.code === 50014) {
+          // to re-login
+          MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            // TODO: 跳转回登录页面
+            return router.replace({ name: 'login' });
+          })
+        }
+        return Promise.reject(new Error(data.message || 'Error'))
+      }
+    }, (error: any) => {
+      console.log('err' + error) // for debug
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+      return Promise.reject(error)
+    });
+
+    return service;
+  }
+}
+
+const requestService = new Request();
+export default requestService;

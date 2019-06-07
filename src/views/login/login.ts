@@ -1,7 +1,6 @@
 import { Component, Vue } from "vue-property-decorator"
-import { Getter, Action } from "vuex-class"
+import * as loginApi from '@/api/login';
 import { LoginData } from '@/types/views/login.interface'
-import Cookies from 'js-cookie';
 
 @Component({
     components: {
@@ -53,5 +52,7 @@ export default class Login extends Vue {
 
     protected async test() {
         console.info(this);
+        let result = loginApi.health();
+        console.info(result);
     }
 }
