@@ -8,7 +8,9 @@
     "url": "git+https://github.com/horsemi/web-client.git"
   },
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "cross-env NODE_ENV=production vue-cli-service serve",
+    "mock": "cross-env NODE_ENV=mock vue-cli-service serve",
+    "qa": "cross-env NODE_ENV=qa vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
@@ -17,7 +19,7 @@
     "com": "node scripts/component"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "element-ui": "^2.7.2",
     "js-cookie": "^2.2.0",
     "moment": "^2.24.0",
@@ -35,10 +37,11 @@
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-e2e-cypress": "^3.2.0",
     "@vue/cli-plugin-typescript": "^3.6.0",
-    "@vue/cli-plugin-unit-jest": "^3.7.0",
+    "@vue/cli-plugin-unit-jest": "^3.8.0",
     "@vue/cli-service": "^3.6.0",
     "@vue/test-utils": "^1.0.0-beta.20",
     "babel-core": "7.0.0-bridge.0",
+    "cross-env": "^5.2.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "sortablejs": "^1.9.0",
