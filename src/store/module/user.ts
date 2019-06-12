@@ -1,6 +1,7 @@
 import storeService, { IStoreService } from '../store';
 import { INamespacedState } from '../store';
 import authService, { IAuth } from '@/utils/auth';
+import * as userApi from '@/api/user';
 
 export interface IUserService {
     token: string;
@@ -22,12 +23,15 @@ export interface IUserService {
      * @description 登录
      * @param userInfo 
      */
-    login(userInfo: {userName: string, userPassword: string}): boolean;
+    login(userInfo: {userName: string, userPassword: string}): Promise<any>;
     /**
      * @description 获取客户明细
-     * @param token 
      */
-    getInfo(token: string);
+    getInfo(): Promise<any>;
+    /**
+     * @description 重置token
+     */
+    removeToken(): Promise<any>;
 }
 
 const stateTypes = {
@@ -55,16 +59,63 @@ class UserSerivce implements IUserService {
 
     login(userInfo: {userName: string, userPassword: string}) {
         // TODO: 调用登录接口
-        this.setToken(userInfo.userName);
-        return true;
+        return new Promise((resolve, reject) => {
+            userApi.login(userInfo)
+            .then(response => {
+                const { data } = response;
+                this.setToken(data.token.data);
+                resolve();
+            })
+            .catch(error => {
+                reject(error);
+            })
+        });
     }
 
-    getInfo(token: string) {
-        // TODO: 根据token获取用户信息
-        this.setId(1);
-        this.setName("Admin");
-        this.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-        this.setRoles(["admin"]);
+    logout() {
+        return new Promise((resolve, reject) => {
+            userApi.logout().then(response => {
+                const { data } = response;
+                if (data.result === 'sueecss') {
+                    resolve();
+                } else {
+                    reject("登出失败！");
+                }
+            })
+        })
+    }
+
+    getInfo() {
+        return new Promise((resolve, reject) => {
+            userApi.getInfo(this.token).then(response => {
+                const { data } = response;
+                if (!data) {
+                    this.removeToken();
+                    reject('无法获取用户信息, 请重新登录!');
+                } else {
+                    const { id, name, avatar, roles} = data.userInfo;
+
+                    if (!roles || roles.length <= 0) {
+                        this.removeToken();
+                        reject('获取权限失败，请重新登录!');
+                    } else {
+                        this.setId(id);
+                        this.setName(name);
+                        this.setAvatar(avatar);
+                        this.setRoles(roles);
+                        resolve(data);
+                    }
+                }
+            })
+        })
+    }
+
+    removeToken() {
+        return new Promise((resolve) => {
+            authService.removeToken();
+            this.setRoles([]);
+            resolve();
+        })
     }
 
     get token() {
@@ -77,7 +128,7 @@ class UserSerivce implements IUserService {
     }
 
     private setToken(val: string) {
-        if (val === '') {
+        if (!val) {
             console.error("token is null");
             return;
         }
