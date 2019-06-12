@@ -32,8 +32,7 @@
 
     @Component({
         created() {
-            console.info(this);
-            console.info(document);
+            //
         },
         mounted() {
             console.info(this.$el);

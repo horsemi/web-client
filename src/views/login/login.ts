@@ -18,7 +18,7 @@ export default class Login extends Vue {
         [
             { type: 'string', message: '请确认账号格式是否正确', trigger: 'blur'},
             { required: true, message: '请输入账号', trigger: 'blur'},
-            { max: 10, message: '账号位数过长', trigger: 'blur'}
+            { max: 15, message: '账号位数过长', trigger: 'blur'}
         ],
         userPassword:
         [
@@ -46,8 +46,12 @@ export default class Login extends Vue {
     }
 
     protected async login() {
-        this.$services.user.login(this.LoginData);
-        this.$router.push('/index/page1');
+        this.$services.user.login(this.LoginData).then(() => {
+            this.$router.push('/index/page1');
+        })
+        .catch(() => {
+            this.$message.error("登录失败，请检查账号或密码是否正确！");
+        });    
     }
 
     protected async test() {

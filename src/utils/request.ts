@@ -60,9 +60,8 @@ class Request implements IRequest {
   }
 
   public async post(url: string, data: any = {}, config: any = {}) {
-    const params = Object.assign(
-      { params: data }, { headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' } }, config);
-    const response = await this.createAxiosInstance().post(url, params);
+    const params = Object.assign({ params: data });
+    const response = await this.createAxiosInstance().post(url, params, config);
     return response;
   }
 

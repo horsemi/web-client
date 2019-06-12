@@ -33,26 +33,47 @@ export default [
         path: 'main',
         name: 'main',
         component: () => import('@/views/pages/main.vue'),
+        meta: {
+          title: 'main',
+          icon: 'main',
+        },
+        
       },
       {
         path: 'page1',
         name: 'page1',
         component: () => import('@/views/pages/page1.vue'),
+        meta: {
+          title: 'page1',
+          icon: 'page1',
+        },
       },
       {
         path: 'page2',
         name: 'page2',
         component: () => import('@/views/pages/page2.vue'),
+        meta: {
+          title: 'page2',
+          icon: 'page2',
+        },
       },
       {
         path: 'page3',
         name: 'page3',
         component: () => import('@/views/pages/page3.vue'),
+        meta: {
+          title: 'page3',
+          icon: 'page3',
+        },
       },
       {
         path: 'page4',
         name: 'page4',
         component: () => import('@/views/pages/page4.vue'),
+        meta: {
+          title: 'page4',
+          icon: 'page4',
+        },
       }
     ]
   },
