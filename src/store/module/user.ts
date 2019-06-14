@@ -93,9 +93,9 @@ class UserSerivce implements IUserService {
                     this.removeToken();
                     reject('无法获取用户信息, 请重新登录!');
                 } else {
-                    const { id, name, avatar, roles} = data.userInfo;
+                    const { id, name, avatar, roles, permissions} = data.userInfo;
 
-                    if (!roles || roles.length <= 0) {
+                    if (!permissions || permissions.length <= 0) {
                         this.removeToken();
                         reject('获取权限失败，请重新登录!');
                     } else {
@@ -103,7 +103,8 @@ class UserSerivce implements IUserService {
                         this.setName(name);
                         this.setAvatar(avatar);
                         this.setRoles(roles);
-                        resolve(data);
+                        this.setPermissions(permissions);
+                        resolve(data.userInfo);
                     }
                 }
             })

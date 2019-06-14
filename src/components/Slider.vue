@@ -59,6 +59,21 @@ export default {
               childtitle: '导航2page4'
             },
           ]
+        },
+        {
+          id: '3',
+          title: '权限3',
+          icon: 'el-icon-location',
+          children: [
+            {
+              index: '/permissionTest1/page5',
+              childtitle: '权限3page5'
+            },
+            {
+              index: '/permissionTest2/page6',
+              childtitle: '权限6page6'
+            },
+          ]
         }
       ]
     }

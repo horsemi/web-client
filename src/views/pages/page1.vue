@@ -35,11 +35,10 @@
             //
         },
         mounted() {
-            console.info(this.$el);
             let eltabs = this.$el.querySelectorAll('.el-tabs__nav')[0];
             Sortable.create(eltabs as HTMLElement, {
                 onEnd: (evt) => {
-                    console.info(evt);
+                    // TODO: 跟换顺序后
                 }
             });
         }

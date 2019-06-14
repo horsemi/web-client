@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import store, { IStoreService } from './store';
 import view, { IViewService } from './module/view';
 import user, { IUserService } from './module/user';
+import permission, { IPermissionService } from './module/permission';
 
 // modules
 
@@ -17,7 +18,8 @@ declare module 'vue/types/vue' {
     $services: {
       store: IStoreService,
       view: IViewService,
-      user: IUserService
+      user: IUserService,
+      permission: IPermissionService,
     }
   }
 }

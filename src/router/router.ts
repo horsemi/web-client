@@ -4,7 +4,11 @@
  * @param {boolean} keepAlive 是否缓存页面
  * @param {string} title 页面标题
  */
-export default [
+
+ /* Layout */
+import Layout from '@/layout';
+
+export const constantRoutes = [
   {
     path: '/',
     redirect: '/index'
@@ -22,11 +26,11 @@ export default [
   {
     path: '/index',
     name: 'index',
-    component: () => import('@/views/index/index.vue'),
+    component: Layout,
     meta: {
       icon: '',
       keepAlive: true,
-      title: '主页'
+      title: '主页',
     },
     children: [
       {
@@ -74,7 +78,51 @@ export default [
           title: 'page4',
           icon: 'page4',
         },
-      }
+      },
     ]
   },
 ]
+
+/**
+ * @description 需要根据权限动态加载的路由
+ */
+export const asyncRoutes = [
+  {
+    path: '/permissionTest1',
+    name: 'page5',
+    component: Layout,
+    meta: {
+      icon: '',
+      title: 'page5',
+    },
+    children: [
+      {
+        path: 'page5',
+        name: 'page5',
+        component: () => import('@/views/pages/page5.vue'),
+        meta: {
+          title: 'page5',
+          icon: 'page5',
+          permission: 'page5'
+        },
+      },
+    ]
+  },  
+  {
+    path: '/permissionTest2',
+    name: 'page6',
+    component: Layout,
+    children: [
+      {
+        path: 'page6',
+        name: 'page6',
+        component: () => import('@/views/pages/page6.vue'),
+        meta: {
+          title: 'page6',
+          icon: 'page6',
+          permission: 'page6'
+        },
+      },
+    ]
+  },
+];
