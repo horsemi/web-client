@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { ICommomUtil, commonUtil } from '@/utils/commonUtils';
+import { ICommomUtil, commonUtil } from '@/utils/common-utils';
 import requestService, { IRequest } from '@/utils/request';
 
 Vue.prototype.$utils = {
