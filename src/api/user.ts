@@ -9,5 +9,5 @@ export const logout = () => {
 }
 
 export const getInfo = (token: string) => {
-    return request.post("5cc00b8791c8495bfb9dff88/web-client/getUserInfo", token); // 来自 easy mock
+    return request.post("5cc00b8791c8495bfb9dff88/web-client/get_userInfo", token); // 来自 easy mock
 }
