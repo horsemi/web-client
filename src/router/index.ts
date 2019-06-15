@@ -22,7 +22,7 @@ const createRouter = () => new Router({
   },
 })
 
-const router = createRouter();
+const router = createRouter() as any;
 
 // 登陆页面路由 path
 const LOGIN_PAGE_PATH = '/login'
@@ -55,10 +55,9 @@ router.beforeEach((to, from, next) => {
         // 根据Token获取用户信息
         userService.getInfo().then((resolve => {
           console.info(resolve);
-
-          const accessRoutes = permissionService.generateRoutes(resolve.permissions, resolve.roles);
-
-          router.addRoutes(accessRoutes as any);
+          
+          permissionService.generateRoutes(resolve.permissions, resolve.roles);
+          router.addRoutes(permissionService.routes as any);
           next();
         }))
         .catch(error => {
@@ -94,9 +93,9 @@ router.afterEach(to => {
   //
 })
 
-// resertRouter: () => {
-//   const newRouter = createRouter();
-//   router.matcher = newRouter.matcher; // reset router
-// }
+export function resertRouter () {
+  const newRouter = createRouter()  as any ;
+  router.matcher = newRouter.matcher; // reset router
+}
 
 export default router

@@ -98,7 +98,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'page5',
-        name: 'page5',
+        name: 'page5 - 1',
         component: () => import('@/views/pages/page5.vue'),
         meta: {
           title: 'page5',
@@ -115,7 +115,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'page6',
-        name: 'page6',
+        name: 'page6 - 1',
         component: () => import('@/views/pages/page6.vue'),
         meta: {
           title: 'page6',

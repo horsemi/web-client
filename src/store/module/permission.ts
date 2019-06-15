@@ -3,6 +3,8 @@ import { INamespacedState } from '../store';
 import { constantRoutes, asyncRoutes } from '@/router/router';
 
 export interface IPermissionService {
+    routes: [];
+
     /**
      * @description 递归函数 动态加载路由，将所有拥有权限的页面组装起来
      * @param routes 
@@ -51,15 +53,13 @@ class PermissionService implements IPermissionService {
     }
 
     generateRoutes(permissions: string[], roles: string[]) {
-            let accessedRoutes;
-            if (roles.includes('admin')) {
-                accessedRoutes = asyncRoutes || [];
-            } else {
-                accessedRoutes = this.filterAsyncRoutes(asyncRoutes, permissions);
-            }
-            this.setRoutes(accessedRoutes);
-            return accessedRoutes;
-
+        let accessedRoutes;
+        if (roles.includes('admin')) {
+            accessedRoutes = asyncRoutes || [];
+        } else {
+            accessedRoutes = this.filterAsyncRoutes(asyncRoutes, permissions);
+        }
+        this.setRoutes(accessedRoutes);
     }
 
     /**
@@ -69,9 +69,17 @@ class PermissionService implements IPermissionService {
     private setRoutes(routes: []) {
         this._store.setData(stateTypes.ADDROUTES, routes);
         this._store.setData(stateTypes.ROUTES, constantRoutes.concat(routes));
-
     }
 
+    get routes() {
+        return this._store.getData("routes");
+    }
+
+    /**
+     * @description 遍历出所有拥有权限的路由
+     * @param permissions 
+     * @param route 
+     */
     private hasPermission(permissions: string[], route: any): boolean {
         if (route.meta && route.meta.permission) {
             return permissions.some(permission => route.meta.permission.includes(permission));
